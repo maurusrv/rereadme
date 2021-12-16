@@ -19,9 +19,14 @@ export type Package = {
   unused: boolean
 }
 
+export type Badge = {
+  order: number,
+  label: string
+}
+
 export type Badges = {
-  dep: Array<string>
-  dev: Array<string>
+  dep: Array<Badge>
+  dev: Array<Badge>
 }
 
 export type Contents = {
