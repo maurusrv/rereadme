@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Badges, Contents, Package } from './types'
+import { Badge, Badges, Contents, Package } from './types'
 
 const npmCheck = require('npm-check')
 
@@ -13,14 +13,7 @@ enum BumpColors {
 
 const generateBadges = (packages: Array<Package>): Badges => {
   const packageOrder = Object.keys(BumpColors).map(key => key.toLowerCase())
-  return packages.sort((a, b) => {
-    let aBump = a.bump || a.bump === null ? 'none' : 'na'
-    let bBump = b.bump || b.bump === null ? 'none' : 'na'
-    return packageOrder.indexOf(aBump) - packageOrder.indexOf(bBump)
-  }).reduce((badges: {
-    dep: Array<string>,
-    dev: Array<string>
-  }, { 
+  const badges = packages.reduce((badges: Badges, { 
     moduleName,
     latest: latestVersion,
     packageJson: declaredVersion,
@@ -46,11 +39,15 @@ const generateBadges = (packages: Array<Package>): Badges => {
       color = BumpColors.MAJOR
     }
 
-    const badge = `[![](https://img.shields.io/static/v1?label=${
+    const badge = {
+      order: packageOrder.indexOf(bump ? bump : bump === null ? 'none' : 'na'),
+      devDependency,
+      label: `[![](https://img.shields.io/static/v1?label=${
       moduleName
     }&message=${
       declaredVersion}%20→%20${latestVersion
     }&color=${color})](${homepage})`
+    }
 
     if (devDependency) {
       return {
@@ -70,9 +67,14 @@ const generateBadges = (packages: Array<Package>): Badges => {
       }
     }
   }, {
-    dev: [],
     dep: [],
+    dev: [],
   })
+
+  return {
+    dep: badges.dep.sort((a, b) => a.order - b.order),
+    dev: badges.dev.sort((a, b) => a.order - b.order),
+  }
 }
 
 const reREADME = async ({
@@ -100,12 +102,12 @@ ${contents?.main ?? ''}`
     markdownContents += `
 ## Package Status
 ### \`dependencies\`
-${packageBadges.dep.reduce((badgesToText: string, badge: string) => {
-  return badgesToText += badge
+${packageBadges.dep.reduce((badgesToText: string, badge: Badge) => {
+  return badgesToText += badge.label
 }, '')}
 ### \`devDependencies\`
-${packageBadges.dev.reduce((badgesToText: string, badge: string) => {
-  return badgesToText += badge
+${packageBadges.dev.reduce((badgesToText: string, badge: Badge) => {
+  return badgesToText += badge.label
 }, '')}
 `
   }
