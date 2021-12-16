@@ -15,9 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/maurusrv/rereadme.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["readme", "shields", "documentation"],
+  "author": "Maurus Vitor",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/maurusrv/rereadme/issues"
   },
