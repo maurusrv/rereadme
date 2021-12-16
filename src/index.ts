@@ -3,8 +3,21 @@ import { Badges, Contents, Package } from './types'
 
 const npmCheck = require('npm-check')
 
+enum BumpColors {
+  NA = 'lightgrey',
+  NONE = 'green',
+  PATCH = 'yellow',
+  MINOR = 'orange', 
+  MAJOR = 'red',
+}
+
 const generateBadges = (packages: Array<Package>): Badges => {
-  return packages.reduce((badges: {
+  const packageOrder = Object.keys(BumpColors).map(key => key.toLowerCase())
+  return packages.sort((a, b) => {
+    let aBump = a.bump || a.bump === null ? 'null' : 'na'
+    let bBump = b.bump || b.bump === null ? 'null' : 'na'
+    return packageOrder.indexOf(aBump) - packageOrder.indexOf(bBump)
+  }).reduce((badges: {
     dep: Array<string>,
     dev: Array<string>
   }, { 
@@ -22,15 +35,15 @@ const generateBadges = (packages: Array<Package>): Badges => {
     bump: string | null
     devDependency: boolean
   }) => {
-    let color = 'lightgrey'
+    let color = BumpColors.NA
     if(bump === null) {
-      color = 'green'
+      color = BumpColors.NONE
     } else if (bump === 'patch') {
-      color = 'yellow'
+      color = BumpColors.PATCH
     } else if (bump === 'minor') {
-      color = 'orange'
+      color = BumpColors.MINOR
     } else if (bump === 'major') {
-      color = 'red'
+      color = BumpColors.MAJOR
     }
 
     const badge = `[![](https://img.shields.io/static/v1?label=${
@@ -72,7 +85,7 @@ const reREADME = async ({
   badges?: boolean
 }): Promise<void> => {
   console.log('Generating latest README...')
-  const checkInfo = await npmCheck()
+  const checkInfo = await npmCheck({ skipUnused: true })
   const packages = await checkInfo.get('packages')
 
   if (badges) console.log('Generating badges...')
