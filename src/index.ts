@@ -108,4 +108,4 @@ ${contents?.footer ?? ''}`
   console.log('Done.')
 }
 
-export default reREADME
+export = reREADME 
