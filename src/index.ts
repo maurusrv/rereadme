@@ -1,16 +1,10 @@
 import * as fs from 'fs'
-import * as path from 'path'
+import { Badges, Contents, Package } from './types'
 
 const npmCheck = require('npm-check')
 
-const reREADME = async (
-  outputPath: string,
-): Promise<void> => {
-  console.log('Generating latest README...')
-  const checkInfo = await npmCheck()
-  const packages = await checkInfo.get('packages')
-  console.log('packages', packages)
-  const packageBadges = packages.reduce((badges: {
+const generateBadges = (packages: Array<Package>): Badges => {
+  return packages.reduce((badges: {
     dep: Array<string>,
     dev: Array<string>
   }, { 
@@ -66,23 +60,47 @@ const reREADME = async (
     dev: [],
     dep: [],
   })
+}
+
+const reREADME = async ({
+  outputPath,
+  contents,
+  badges,
+}: {
+  outputPath: string,
+  contents?: Contents,
+  badges?: boolean
+}): Promise<void> => {
+  console.log('Generating latest README...')
+  const checkInfo = await npmCheck()
+  const packages = await checkInfo.get('packages')
+
+  if (badges) console.log('Generating badges...')
+  const packageBadges = badges ? generateBadges(packages) : null
   
-  console.log(packageBadges)
+  let markdownContents = ''
 
-  const contents = `# rereadme
-an exploration on creating a readme file generator
+  markdownContents = `${contents?.header ?? ''}
+${contents?.main ?? ''}`
 
-## Package Status
-### dependencies
+  if (packageBadges) {
+    markdownContents += `## Package Status
+### \`dependencies\`
 ${packageBadges.dep.reduce((badgesToText: string, badge: string) => {
   return badgesToText += badge
 }, '')}
-### devDependencies
+### \`devDependencies\`
 ${packageBadges.dev.reduce((badgesToText: string, badge: string) => {
   return badgesToText += badge
-}, '')}`
+}, '')}
+`
+  }
 
-  fs.writeFile(outputPath, contents, (err) => {
+  markdownContents += `
+#
+${contents?.footer ?? ''}`
+
+  fs.writeFile(outputPath, markdownContents, (err) => {
     if (err) {
       return console.log(err)
     }
