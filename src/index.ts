@@ -14,8 +14,8 @@ enum BumpColors {
 const generateBadges = (packages: Array<Package>): Badges => {
   const packageOrder = Object.keys(BumpColors).map(key => key.toLowerCase())
   return packages.sort((a, b) => {
-    let aBump = a.bump || a.bump === null ? 'null' : 'na'
-    let bBump = b.bump || b.bump === null ? 'null' : 'na'
+    let aBump = a.bump || a.bump === null ? 'none' : 'na'
+    let bBump = b.bump || b.bump === null ? 'none' : 'na'
     return packageOrder.indexOf(aBump) - packageOrder.indexOf(bBump)
   }).reduce((badges: {
     dep: Array<string>,
@@ -97,7 +97,8 @@ const reREADME = async ({
 ${contents?.main ?? ''}`
 
   if (packageBadges) {
-    markdownContents += `## Package Status
+    markdownContents += `
+## Package Status
 ### \`dependencies\`
 ${packageBadges.dep.reduce((badgesToText: string, badge: string) => {
   return badgesToText += badge
