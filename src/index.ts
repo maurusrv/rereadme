@@ -71,10 +71,6 @@ const generateBadges = (packages: Array<Package>): Badges => {
     dev: [],
   })
 
-  console.log({
-    badges
-  })
-
   return {
     dep: badges.dep.sort((a, b) => a.order - b.order),
     dev: badges.dev.sort((a, b) => a.order - b.order),

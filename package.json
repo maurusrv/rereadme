@@ -1,6 +1,6 @@
 {
   "name": "@maurusrv/rereadme",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "an exploration on creating a readme file generator",
   "main": "./lib/index.js",
   "files": [
