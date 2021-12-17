@@ -8,8 +8,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "rereadme": "npm run build && node ./lib/index.js",
-    "test": "npm run build && jest --detectOpenHandles"
+    "test": "rm -rf ./lib && npm run build && jest --detectOpenHandles --runInBand",
+    "preversion": "npm run test",
+    "version": "git add -A ./README.md",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
