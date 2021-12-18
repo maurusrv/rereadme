@@ -1,6 +1,6 @@
 {
   "name": "@maurusrv/rereadme",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "an exploration on creating a readme file generator",
   "main": "./lib/index.js",
   "files": [
@@ -17,7 +17,11 @@
     "type": "git",
     "url": "git+https://github.com/maurusrv/rereadme.git"
   },
-  "keywords": ["readme", "shields", "documentation"],
+  "keywords": [
+    "readme",
+    "shields",
+    "documentation"
+  ],
   "author": "Maurus Vitor",
   "license": "MIT",
   "bugs": {
