@@ -1,6 +1,6 @@
 {
   "name": "@maurusrv/rereadme",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "an exploration on creating a readme file generator",
   "main": "./lib/index.js",
   "files": [
@@ -8,14 +8,20 @@
   ],
   "scripts": {
     "build": "tsc",
-    "rereadme": "npm run build && node ./lib/index.js",
-    "test": "npm run build && jest --detectOpenHandles"
+    "test": "rm -rf ./lib && npm run build && jest --detectOpenHandles --runInBand",
+    "preversion": "npm run test",
+    "version": "git add -A ./README.md",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maurusrv/rereadme.git"
   },
-  "keywords": ["readme", "shields", "documentation"],
+  "keywords": [
+    "readme",
+    "shields",
+    "documentation"
+  ],
   "author": "Maurus Vitor",
   "license": "MIT",
   "bugs": {

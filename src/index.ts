@@ -95,12 +95,11 @@ const reREADME = async ({
   
   let markdownContents = ''
 
-  markdownContents = `${contents?.header ?? ''}
-${contents?.main ?? ''}`
+  markdownContents = `${contents?.header ? `${contents.header}\n` : ''}`
+  markdownContents += `${contents?.main ? `${contents.main}\n` : ''}`
 
   if (packageBadges) {
-    markdownContents += `
-## Package Status
+    markdownContents += `## Package Status
 ### \`dependencies\`
 ${packageBadges.dep.reduce((badgesToText: string, badge: Badge) => {
   return badgesToText += badge.label
@@ -112,9 +111,9 @@ ${packageBadges.dev.reduce((badgesToText: string, badge: Badge) => {
 `
   }
 
-  markdownContents += `
+  markdownContents += contents?.footer ? `
 #
-${contents?.footer ?? ''}`
+${contents.footer}` : ''
 
   fs.writeFile(outputPath, markdownContents, (err) => {
     if (err) {
